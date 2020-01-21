@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <title>Document</title>
+  </head>
+  <body class="container">
+      <h2>SHOPPING LIST</h2>
+    <div id="shoppingList" >
+      <div>
+        <table class="responsive-table striped, col s12">
+          <tr v-for="(item, index) in shoppingList">
+            <td v-bind:style="item.price <= 10 ? 'color: red;' : 'fontSize: 13;'">
+              <p class="col s4">{{ item.name }} </p>
+            </td>
+            <td class="row" v-bind:style="item.price <= 10 ? 'color: red;' : 'fontSize: 13;'">
+              <input class="col s2 offset-s2" v-model.number="item.quantity" type="number" step="1" />
+            </td>
+            <td>
+              <p class="col s2" v-bind:style="item.price <= 10 ? 'color: red;' : 'fontSize: 13;'">uds.= {{item.quantity * item.price}} €</p>
+            </td>
+            <td>
+              <button class="col s2 waves-effect waves-light btn" v-on:click="deleteRegister(index)">Elimina</button>
+            </td>
+            
+          </tr>
+        </table>
+      </div>
+
+      <h2>Total despesa: {{calculateTotalPrice()}} €</h1>
+      <div class="row col s12">
+          
+          <div class="col s3">
+            producte:<input v-model="insertProduct.name" type="text" placeholder="nou producte"/>
+          </div>
+          
+          <div class="col s3">
+            Preu:<input v-model.number="insertProduct.price" type="number" step="1" placeholder="introdueix un preu"/>
+          </div>
+      </div>
+      <div class="row col 12">
+        <div class="col s3">
+            <button v-on:click="pushRegister()" class="btn waves-effect waves-light">afegir</button>
+        </div>
+        <div class="col s6">
+            <button v-on:click="deleteRegister(-1)" class="col s6 btn waves-effect waves-light" >Esborral'ultima linia</button>
+        </div>
+      </div>
+  </body>
+ 
+</html>
+<script>
+  var shoppingList = new Vue({
+    el: "#shoppingList",
+    data: {
+      insertProduct: { name: undefined, price: undefined, quantity: 0 },
+      shoppingList: [
+        { name: "Foo", price: 20, quantity: 0 },
+        { name: "bar", price: "9", quantity: 0 }
+      ]
+    },
+    methods: {
+      deleteRegister: function(index) {
+        this.shoppingList.splice(index, 1);
+      },
+      calculateTotalPrice: function() {
+        let priceTotal = 0;
+        this.shoppingList.forEach(item => {
+          priceTotal += item.quantity * item.price;
+        });
+        return priceTotal;
+      },
+      pushRegister: function() {
+        if (this.insertProduct.price || this.insertProduct.quantity) {
+          let product = {name:this.insertProduct.name, price:this.insertProduct.price, quantity:this.insertProduct.quantity};
+          this.shoppingList.push(product);
+        }
+      }
+    }
+  });
+</script>
